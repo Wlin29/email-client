@@ -1,0 +1,60 @@
+<script>
+	import { Form, FormButton, FormField, FormInput, FormItem, FormLabel, FormValidation } from '$lib/components/ui/form';
+	import { superValidate } from 'sveltekit-superforms/client';
+	import { formSchema } from './schema'; // Define your form schema here
+  
+	let form = superForm(formSchema, { validators: formSchema });
+  
+	// Function to handle form submission
+	async function handleSubmit() {
+	  try {
+		const validationResult = await superValidate(form);
+		if (validationResult.valid) {
+		  // Assuming sendEmail is a function that sends the email
+		  await sendEmail(form.data);
+		  // Handle success (e.g., show a success message)
+		}
+	  } catch (error) {
+		// Handle errors (e.g., show an error message)
+	  }
+	}
+  </script>
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		%sveltekit.head%
+	</head>
+	<body data-sveltekit-preload-data="hover">
+		<div style="display: contents">%sveltekit.body%</div>
+	</body>
+</html>
+  
+<Form {form} schema={formSchema} let:config on:submit={handleSubmit}>
+<FormField {config} name="recipient">
+	<FormItem>
+	<FormLabel>Recipient Email</FormLabel>
+	<FormInput placeholder="Enter recipient email..." type="email" />
+	<FormValidation />
+	</FormItem>
+</FormField>
+<FormField {config} name="subject">
+	<FormItem>
+	<FormLabel>Subject</FormLabel>
+	<FormInput placeholder="Enter subject..." />
+	<FormValidation />
+	</FormItem>
+</FormField>
+<FormField {config} name="body">
+	<FormItem>
+	<FormLabel>Message Body</FormLabel>
+	<FormInput placeholder="Enter message body..." type="text" multiline />
+	<FormValidation />
+	</FormItem>
+</FormField>
+<FormButton type="submit">Send Email</FormButton>
+</Form>
+  
